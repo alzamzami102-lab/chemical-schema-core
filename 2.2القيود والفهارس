@@ -1,0 +1,16 @@
+CREATE INDEX IF NOT EXISTS idx_physchem_identity
+  ON physchem_property_registry(chemical_identity_id);
+
+CREATE INDEX IF NOT EXISTS idx_physchem_property_code
+  ON physchem_property_registry(property_code);
+
+CREATE INDEX IF NOT EXISTS idx_physchem_source_name
+  ON physchem_property_registry(source_name);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_physchem_property_record
+  ON physchem_property_registry(
+    chemical_identity_id,
+    property_code,
+    source_name,
+    COALESCE(source_record_ref, '')
+  );
