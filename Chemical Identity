@@ -1,0 +1,52 @@
+CREATE TABLE IF NOT EXISTS chemical_identity_registry (
+  chemical_identity_id BIGSERIAL PRIMARY KEY,
+  preferred_name        TEXT,
+  iupac_name            TEXT,
+  molecular_formula     TEXT,
+  canonical_smiles      TEXT,
+  standard_inchi        TEXT,
+  standard_inchikey     TEXT,
+  pubchem_cid           BIGINT,
+  chebi_id              TEXT,
+  identity_status       TEXT NOT NULL DEFAULT 'candidate',
+  curation_level        TEXT,
+  source_priority_text  TEXT,
+  created_at            TIMESTAMPTZ DEFAULT now(),
+  updated_at            TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS chemical_identity_synonym_registry (
+  synonym_id            BIGSERIAL PRIMARY KEY,
+  chemical_identity_id  BIGINT NOT NULL
+    REFERENCES chemical_identity_registry(chemical_identity_id)
+    ON DELETE CASCADE,
+  synonym_text          TEXT NOT NULL,
+  synonym_type          TEXT,
+  source_name           TEXT,
+  is_preferred          BOOLEAN DEFAULT FALSE,
+  created_at            TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS chemical_identity_xref_registry (
+  xref_id               BIGSERIAL PRIMARY KEY,
+  chemical_identity_id  BIGINT NOT NULL
+    REFERENCES chemical_identity_registry(chemical_identity_id)
+    ON DELETE CASCADE,
+  source_name           TEXT NOT NULL,
+  external_id           TEXT NOT NULL,
+  xref_type             TEXT,
+  created_at            TIMESTAMPTZ DEFAULT now(),
+  UNIQUE (source_name, external_id)
+);
+
+CREATE TABLE IF NOT EXISTS chemical_identity_classification_registry (
+  classification_id     BIGSERIAL PRIMARY KEY,
+  chemical_identity_id  BIGINT NOT NULL
+    REFERENCES chemical_identity_registry(chemical_identity_id)
+    ON DELETE CASCADE,
+  classification_source TEXT NOT NULL,
+  class_id              TEXT,
+  class_name            TEXT,
+  relation_type         TEXT,
+  created_at            TIMESTAMPTZ DEFAULT now()
+);
