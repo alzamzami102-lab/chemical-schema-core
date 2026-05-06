@@ -1,0 +1,61 @@
+CREATE TABLE IF NOT EXISTS experimental_endpoint_registry (
+  experimental_endpoint_id BIGSERIAL PRIMARY KEY,
+  endpoint_code            TEXT NOT NULL UNIQUE,
+  endpoint_name            TEXT NOT NULL,
+  endpoint_family          TEXT,
+  preferred_unit           TEXT,
+  preferred_scale          TEXT,
+  oecd_alignment_text      TEXT,
+  created_at               TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS experimental_dataset_registry (
+  experimental_dataset_id  BIGSERIAL PRIMARY KEY,
+  dataset_code             TEXT NOT NULL UNIQUE,
+  dataset_name             TEXT NOT NULL,
+  dataset_scope_text       TEXT,
+  source_citation_text     TEXT,
+  source_url               TEXT,
+  record_count_text        TEXT,
+  curation_method_text     TEXT,
+  created_at               TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS experimental_observation_registry (
+  experimental_observation_id BIGSERIAL PRIMARY KEY,
+  chemical_identity_id        BIGINT NOT NULL
+    REFERENCES chemical_identity_registry(chemical_identity_id)
+    ON DELETE CASCADE,
+  experimental_endpoint_id    BIGINT NOT NULL
+    REFERENCES experimental_endpoint_registry(experimental_endpoint_id)
+    ON DELETE CASCADE,
+  observed_value_num          NUMERIC,
+  observed_value_text         TEXT,
+  observed_unit               TEXT,
+  observed_scale              TEXT,
+  temperature_value           NUMERIC,
+  temperature_unit            TEXT,
+  pressure_value              NUMERIC,
+  pressure_unit               TEXT,
+  ph_value                    NUMERIC,
+  medium_text                 TEXT,
+  protocol_text               TEXT,
+  source_name                 TEXT NOT NULL,
+  source_record_ref           TEXT,
+  source_year                 INT,
+  reliability_label           TEXT,
+  evidence_type               TEXT,
+  curation_note               TEXT,
+  created_at                  TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS experimental_dataset_membership (
+  membership_id              BIGSERIAL PRIMARY KEY,
+  experimental_dataset_id    BIGINT NOT NULL
+    REFERENCES experimental_dataset_registry(experimental_dataset_id)
+    ON DELETE CASCADE,
+  experimental_observation_id BIGINT NOT NULL
+    REFERENCES experimental_observation_registry(experimental_observation_id)
+    ON DELETE CASCADE,
+  UNIQUE (experimental_dataset_id, experimental_observation_id)
+);
