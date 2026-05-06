@@ -1,0 +1,42 @@
+CREATE TABLE IF NOT EXISTS physchem_property_dictionary (
+  property_code      TEXT PRIMARY KEY,
+  property_name      TEXT NOT NULL,
+  preferred_unit     TEXT,
+  value_type         TEXT NOT NULL,
+  source_scope_text  TEXT
+);
+
+CREATE TABLE IF NOT EXISTS physchem_property_registry (
+  physchem_property_id   BIGSERIAL PRIMARY KEY,
+  chemical_identity_id   BIGINT NOT NULL
+    REFERENCES chemical_identity_registry(chemical_identity_id)
+    ON DELETE CASCADE,
+  property_code          TEXT NOT NULL
+    REFERENCES physchem_property_dictionary(property_code),
+  property_name          TEXT NOT NULL,
+  property_value_num     NUMERIC,
+  property_value_text    TEXT,
+  property_unit          TEXT,
+  property_method_text   TEXT,
+  property_condition_text TEXT,
+  source_name            TEXT NOT NULL,
+  source_record_ref      TEXT,
+  evidence_type          TEXT,
+  quality_note           TEXT,
+  created_at             TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS physchem_measurement_context_registry (
+  measurement_context_id BIGSERIAL PRIMARY KEY,
+  physchem_property_id   BIGINT NOT NULL
+    REFERENCES physchem_property_registry(physchem_property_id)
+    ON DELETE CASCADE,
+  temperature_value      NUMERIC,
+  temperature_unit       TEXT,
+  pressure_value         NUMERIC,
+  pressure_unit          TEXT,
+  ph_value               NUMERIC,
+  medium_text            TEXT,
+  notes_text             TEXT,
+  created_at             TIMESTAMPTZ DEFAULT now()
+);
