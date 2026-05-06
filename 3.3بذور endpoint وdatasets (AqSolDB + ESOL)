@@ -1,0 +1,47 @@
+INSERT INTO experimental_endpoint_registry (
+  endpoint_code,
+  endpoint_name,
+  endpoint_family,
+  preferred_unit,
+  preferred_scale,
+  oecd_alignment_text
+)
+VALUES (
+  'aqueous_solubility',
+  'Aqueous Solubility',
+  'physicochemical_experimental',
+  'mol/L_or_contextual',
+  'LogS_or_native',
+  'Aligned conceptually with OECD endpoint-oriented reporting'
+)
+ON CONFLICT (endpoint_code) DO NOTHING;
+
+INSERT INTO experimental_dataset_registry (
+  dataset_code,
+  dataset_name,
+  dataset_scope_text,
+  source_citation_text,
+  source_url,
+  record_count_text,
+  curation_method_text
+)
+VALUES
+(
+  'aqsoldb',
+  'AqSolDB',
+  'Curated aqueous solubility dataset',
+  'Sorkun MC, Khetan A, Er S. Sci Data. 2019.',
+  'https://www.nature.com/articles/s41597-019-0151-1',
+  '9982 unique compounds',
+  'Merged and standardized from public datasets'
+),
+(
+  'esol_delaney',
+  'Delaney ESOL Dataset',
+  'Measured aqueous solubility dataset used in ESOL context',
+  'Delaney JS. J Chem Inf Comput Sci. 2004.',
+  'https://pubs.acs.org/doi/10.1021/ci034243x',
+  '2874 measured solubilities',
+  'Measured dataset used for model context'
+)
+ON CONFLICT (dataset_code) DO NOTHING;
