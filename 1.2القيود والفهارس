@@ -1,0 +1,20 @@
+CREATE UNIQUE INDEX IF NOT EXISTS uq_identity_inchikey
+  ON chemical_identity_registry(standard_inchikey)
+  WHERE standard_inchikey IS NOT NULL;
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_identity_pubchem_cid
+  ON chemical_identity_registry(pubchem_cid)
+  WHERE pubchem_cid IS NOT NULL;
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_identity_chebi_id
+  ON chemical_identity_registry(chebi_id)
+  WHERE chebi_id IS NOT NULL;
+
+CREATE INDEX IF NOT EXISTS idx_identity_name
+  ON chemical_identity_registry(preferred_name);
+
+CREATE INDEX IF NOT EXISTS idx_identity_formula
+  ON chemical_identity_registry(molecular_formula);
+
+CREATE INDEX IF NOT EXISTS idx_identity_synonym_text
+  ON chemical_identity_synonym_registry(synonym_text);
