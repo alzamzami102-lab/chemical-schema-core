@@ -1,0 +1,18 @@
+CREATE INDEX IF NOT EXISTS idx_obs_identity
+  ON experimental_observation_registry(chemical_identity_id);
+
+CREATE INDEX IF NOT EXISTS idx_obs_endpoint
+  ON experimental_observation_registry(experimental_endpoint_id);
+
+CREATE INDEX IF NOT EXISTS idx_obs_source
+  ON experimental_observation_registry(source_name);
+
+CREATE UNIQUE INDEX IF NOT EXISTS uq_obs_source_record
+  ON experimental_observation_registry(
+    chemical_identity_id,
+    experimental_endpoint_id,
+    source_name,
+    COALESCE(source_record_ref, ''),
+    COALESCE(observed_scale, ''),
+    COALESCE(observed_unit, '')
+  );
